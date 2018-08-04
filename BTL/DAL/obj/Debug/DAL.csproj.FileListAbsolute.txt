@@ -4,3 +4,9 @@ C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\BTL\DAL\bin\Debug\DTO.dl
 C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\BTL\DAL\bin\Debug\DTO.pdb
 C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\BTL\DAL\obj\Debug\DAL.dll
 C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\BTL\DAL\obj\Debug\DAL.pdb
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\btlLamThue\BTL\DAL\bin\Debug\DAL.dll
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\btlLamThue\BTL\DAL\bin\Debug\DAL.pdb
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\btlLamThue\BTL\DAL\bin\Debug\DTO.dll
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\btlLamThue\BTL\DAL\bin\Debug\DTO.pdb
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\btlLamThue\BTL\DAL\obj\Debug\DAL.dll
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\btlLamThue\BTL\DAL\obj\Debug\DAL.pdb

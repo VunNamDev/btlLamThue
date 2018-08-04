@@ -71,5 +71,14 @@ namespace BTL
                 MessageBox.Show("Nhập điểm thất bại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Hủy thao tác?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                this.Close();
+            }
+        }
     }
 }

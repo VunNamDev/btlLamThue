@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DTO;
 using System.Data.SqlClient;
+using System.Data;
 namespace DAL
 {
     public class LopDAL
@@ -26,6 +27,19 @@ namespace DAL
 
 
         }
+
+        public DataTable layLopCoTen()
+        {
+            KetNoiCSDL.moKetNoi();
+            string get = "select maLop ,tenLop ,nienKhoa, siSo, hoTen from CanBoGiaoVien inner join Lop on CanBoGiaoVien.maCBGV=Lop.maCBGV";
+            SqlCommand cmd = new SqlCommand(get, KetNoiCSDL.connect);
+            SqlDataReader dr = cmd.ExecuteReader();
+            DataTable tb = new DataTable();
+            tb.Load(dr);
+            KetNoiCSDL.dongKetNoi();
+            return tb;
+        }
+
         public List<Lop> layLopTheoDieuKien(string maLop)
         {
             List<Lop> arr = new List<Lop>();

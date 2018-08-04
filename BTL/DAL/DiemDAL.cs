@@ -28,6 +28,7 @@ namespace DAL
 
 
         }
+        
         public DataTable layDiemCoTenHocSinh(string maLop, string maMon)
         {
             KetNoiCSDL.moKetNoi();

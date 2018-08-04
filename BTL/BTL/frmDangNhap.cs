@@ -21,37 +21,35 @@ namespace BTL
 
         private void frmDangNhap_Load(object sender, EventArgs e)
         {
-            frmMain.gv = false;
-            frmMain.admin = false;
+            
         }
 
         private void btnDangNhap_Click(object sender, EventArgs e)
         {
-            foreach(CanBoGiaoVien cb in bulCBGV.layTatCBGV())
+            bool check = false;
+            
+            foreach (CanBoGiaoVien cb in bulCBGV.layTatCBGV())
             {
                 if(cb.TaiKhoan == txtTaiKhoan.Text && cb.MatKhau == txtMatKhau.Text)
                 {
-                    if (cb.LoaiTaiKhoan == "gv")
-                    {
-
-                        frmMain.gv = true;
-                        frmMain frm = new frmMain();
-                        frm.Show();
-                        Visible = false;
-                       
-                        
-                    }
-                    if (cb.LoaiTaiKhoan == "admin")
-                    {
-
-                        frmMain.admin = true;
-                        frmMain frm = new frmMain();
-                        frm.Show();
-                        Visible = false;
-
-                    }
-
+                    check = true;
+                    frmMain frm = new frmMain(cb);                                         
+                    frm.Show();
+                    Visible = false;
+                    break;
                 }
+            }
+            if(!check)
+                MessageBox.Show("Sai tài khoản hoặc mật khẩu", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        private void btnThoat_Click(object sender, EventArgs e)
+        {
+           
+            DialogResult result = MessageBox.Show("Thoát?", "Thông báo", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                this.Close();
             }
         }
     }

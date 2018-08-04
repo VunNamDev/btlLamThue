@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTO;
 using BUL;
+using Microsoft.Reporting.WinForms;
+
 namespace BTL
 {
     public partial class frmMain : Form
     {
         bool isFormActive = true;
-        public static bool gv = false;
-        public static bool admin = false;
+        CanBoGiaoVien cb = new CanBoGiaoVien();
         MonHocBUL monHocBUL = new MonHocBUL();
         CanBoGiaoVienBUL canBoGiaoVienBUL = new BUL.CanBoGiaoVienBUL();
         DiemBUL diemBUL = new DiemBUL();
@@ -25,21 +26,49 @@ namespace BTL
 
 
         CanBoGiaoVienBUL bulCBGV = new CanBoGiaoVienBUL();
-        public frmMain()
+        public frmMain(CanBoGiaoVien cb)
         {
+            this.cb = cb;
             InitializeComponent();
+            if (cb.LoaiTaiKhoan=="admin")
+            {
+                tabItemBaoCaoThongKe.Visible = true;
+                tabItemQuanLyDanhMuc.Visible = true;
+                tabItemQuanLyDiem.Visible = false;
+                tabItemBaoCaoThongKe.Visible = true;
+                tabItemPhanCongGiangDay.Visible = true;
+                tabMonHoc.Visible = true;
+                hienMonHoc();
+            }
+            if (cb.LoaiTaiKhoan == "gv")
+            {
+                tabItemBaoCaoThongKe.Visible = false;
+                tabItemQuanLyDanhMuc.Visible = false;
+                tabItemQuanLyDiem.Visible = true;
+                tabItemBaoCaoThongKe.Visible = false;
+                tabItemPhanCongGiangDay.Visible = false;
+                tabDiem.Visible = true;
+                hienDiem();
+            }
+            
         }
        
     
         private void frmMain_Load(object sender, EventArgs e)
         {
-            
+            // TODO: This line of code loads data into the 'QuanLyHocSinhDataSet1.v2' table. You can move, or remove it, as needed.
+            this.v2TableAdapter.Fill(this.QuanLyHocSinhDataSet1.v2,"");
+            hienCBLop_BaoCao();
+            hienCBLop_BaoCao_GiaoVien();
+            // TODO: This line of code loads data into the 'QuanLyHocSinhDataSet.v1' table. You can move, or remove it, as needed.
+            this.v1TableAdapter.Fill(this.QuanLyHocSinhDataSet.v1,null);
+
 
             hienCanBoGiaoVien();
             hienDiem();
             hienHoSoHocSinh();
             hienLop();
-            hienMonHoc();
+           // hienMonHoc();
             hienLichPhanCong();
             hienCBTenMon();
             hienCBTenLop();
@@ -48,7 +77,35 @@ namespace BTL
             lanDau();
             //MessageBox.Show(admin.ToString());
             // MessageBox.Show(gv.ToString());
+            this.reportViewer1.RefreshReport();
+            this.reportViewer2.RefreshReport();
         }
+        public void addParamBaoCaoHocSinh()
+        {
+            ReportParameter[] arrRP = new ReportParameter[2];
+            arrRP[0] = new ReportParameter("lop");
+            arrRP[1] = new ReportParameter("nguoiLap");
+          
+            arrRP[0].Values.Add(cbTenLopBaoCao.Text + "");
+            arrRP[1].Values.Add(cb.HoTen);
+        
+
+            this.reportViewer1.LocalReport.SetParameters(arrRP);
+            this.reportViewer1.RefreshReport();
+        }
+        public void addParamBaoCaoGiaoVien()
+        {
+            ReportParameter[] arrRP = new ReportParameter[2];
+            arrRP[0] = new ReportParameter("lop");
+            arrRP[1] = new ReportParameter("nguoiLap");
+
+            arrRP[0].Values.Add(cbLop_GiaoVien.Text + "");
+            arrRP[1].Values.Add(cb.HoTen);
+
+            this.reportViewer2.LocalReport.SetParameters(arrRP);
+            this.reportViewer2.RefreshReport();
+        }
+
         void reloadDGV()
         {
             hienMonHoc();
@@ -83,6 +140,19 @@ namespace BTL
             cbLop.DisplayMember = "tenLop";
             cbLop.ValueMember = "maLop";
         }
+        void hienCBLop_BaoCao()
+        {
+
+            cbTenLopBaoCao.DataSource = lopBUL.layTatLop();
+            cbTenLopBaoCao.DisplayMember = "tenLop";
+            cbTenLopBaoCao.ValueMember = "maLop";
+        }
+        void hienCBLop_BaoCao_GiaoVien()
+        {
+            cbLop_GiaoVien.DataSource = lopBUL.layTatLop();
+            cbLop_GiaoVien.DisplayMember = "tenLop";
+            cbLop_GiaoVien.ValueMember = "maLop";
+        }
         void hienMonHoc()
         {
             dgvMonHoc.DataSource = monHocBUL.layTatMonHoc();
@@ -91,7 +161,7 @@ namespace BTL
             dgvMonHoc.Columns[2].HeaderText = "Số tiết học";
         }
         void hienLop() {
-            dgvLop.DataSource = lopBUL.layTatLop();
+            dgvLop.DataSource = lopBUL.layTatLopCoTen();
             dgvLop.Columns[0].HeaderText = "Mã lớp";
             dgvLop.Columns[1].HeaderText = "Tên lớp";
             dgvLop.Columns[2].HeaderText = "Niên khoá";
@@ -127,6 +197,13 @@ namespace BTL
         void hienCanBoGiaoVien()
         {
             dgvCanBoGiaoVien.DataSource = canBoGiaoVienBUL.layTatCBGV();
+            dgvCanBoGiaoVien.Columns[0].HeaderText = "Mã CBGV";
+            dgvCanBoGiaoVien.Columns[1].HeaderText = "Họ tên";
+            dgvCanBoGiaoVien.Columns[2].HeaderText = "Địa chỉ";
+            dgvCanBoGiaoVien.Columns[3].HeaderText = "Số điện thoại";
+            dgvCanBoGiaoVien.Columns[4].HeaderText = "Tài khoản";
+            dgvCanBoGiaoVien.Columns[5].HeaderText = "Mật khẩu";
+            dgvCanBoGiaoVien.Columns[6].HeaderText = "Loại tài khoản";
         }
         void hienDiem()
         {
@@ -134,20 +211,16 @@ namespace BTL
         }
         void hienLichPhanCong()
         {
-            tabMonHoc.Visible = false;
-            tabHocSinh.Visible = false;
-            tabCanBoGiaoVien.Visible = false;
-            tabDiem.Visible = false;
-            tabLichPhanCong.Visible = true;
-            tabDanhSachHocSinh.Visible = false;
-            tabDanhSachGiaoVien.Visible = false;
-            tabLop.Visible = false;
+           
             hienCBGiaoVien();
             hienCBLop();
             hienCBTenMon_PhanCong();
             dtNgay.Value = DateTime.Today;
             dgvLichPhanCong.DataSource = phanCongGiangDayBUL.layTatPhanCongGiangDay();
-
+            dgvLichPhanCong.Columns[0].HeaderText = "Tên lớp";
+            dgvLichPhanCong.Columns[1].HeaderText = "Tên môn";
+            dgvLichPhanCong.Columns[2].HeaderText = "Giáo viên";
+            dgvLichPhanCong.Columns[3].HeaderText = "Ngày phân công";
             string[] arr = new string[3];
             arr[0] = "Mã lớp";
             arr[1] = "Mã môn";
@@ -217,7 +290,15 @@ namespace BTL
         private void btnXemLichPhanCng_Click(object sender, EventArgs e)
         {
             hienLichPhanCong();
-          
+            tabMonHoc.Visible = false;
+            tabHocSinh.Visible = false;
+            tabCanBoGiaoVien.Visible = false;
+            tabDiem.Visible = false;
+            tabLichPhanCong.Visible = true;
+            tabDanhSachHocSinh.Visible = false;
+            tabDanhSachGiaoVien.Visible = false;
+            tabLop.Visible = false;
+
         }
 
         private void btnDiem_Click(object sender, EventArgs e)
@@ -423,17 +504,41 @@ namespace BTL
 
         private void btnTimMonHoc_Click(object sender, EventArgs e)
         {
-            dgvMonHoc.DataSource = monHocBUL.layTatMonHocTheoDieuKien(txtMonHoc.Text);
+            if (txtMonHoc.Text == "")
+            {
+                dgvMonHoc.DataSource = monHocBUL.layTatMonHoc();
+            }
+            else
+            {
+                dgvMonHoc.DataSource = monHocBUL.layTatMonHocTheoDieuKien(txtMonHoc.Text);
+            }
+
         }
 
         private void btnTimHocSinh_Click(object sender, EventArgs e)
         {
-            dgvHocSinh.DataSource = hoSoHocSinhBUL.layTatHoSoHocSinhCoTenLopTheoDieuKien(txtHocSinh.Text);
+            if (txtHocSinh.Text=="")
+            {
+                dgvHocSinh.DataSource = hoSoHocSinhBUL.layTatHoSoHocSinhCoTenLop();
+            }
+            else
+            {
+                dgvHocSinh.DataSource = hoSoHocSinhBUL.layTatHoSoHocSinhCoTenLopTheoDieuKien(txtHocSinh.Text);
+
+            }
         }
 
         private void btnTimCanBoGiaoVien_Click(object sender, EventArgs e)
         {
-            dgvCanBoGiaoVien.DataSource = canBoGiaoVienBUL.layTatCBGVTheoDieuKien(txtCanBoGiaoVien.Text);
+            if (txtCanBoGiaoVien.Text == "")
+            {
+                dgvCanBoGiaoVien.DataSource = canBoGiaoVienBUL.layTatCBGV();
+            }
+            else
+            {
+                dgvCanBoGiaoVien.DataSource = canBoGiaoVienBUL.layTatCBGVTheoDieuKien(txtCanBoGiaoVien.Text);
+
+            }
         }
 
         private void btnTimLop_Click(object sender, EventArgs e)
@@ -443,23 +548,62 @@ namespace BTL
 
         private void btnTimLichPhanCong_Click(object sender, EventArgs e)
         {
-            if(cbLoai.Text=="Mã môn")
+            if (txtLichPhanCong.Text == "")
             {
-               
+                dgvLichPhanCong.DataSource = phanCongGiangDayBUL.layTatPhanCongGiangDay();
+            }
+            else
+            {
+                if (cbLoai.Text == "Mã môn")
+                {
 
-                dgvLichPhanCong.DataSource = phanCongGiangDayBUL.layPhanCongGiangDayTheoTenCoDieuKienTheoMonHoc(txtLichPhanCong.Text);
-            }
-            if (cbLoai.Text == "Mã lớp")
-            {
-              
-                dgvLichPhanCong.DataSource = phanCongGiangDayBUL.layPhanCongGiangDayTheoTenCoDieuKienTheoLopHoc(txtLichPhanCong.Text);
-            }
-            if (cbLoai.Text == "Mã giáo viên")
-            {
-               
+                    dgvLichPhanCong.DataSource = phanCongGiangDayBUL.layPhanCongGiangDayTheoTenCoDieuKienTheoMonHoc(txtLichPhanCong.Text);
+                }
+                if (cbLoai.Text == "Mã lớp")
+                {
 
-                dgvLichPhanCong.DataSource = phanCongGiangDayBUL.layPhanCongGiangDayTheoTenCoDieuKienTheoGiaoVien(txtLichPhanCong.Text);
+                    dgvLichPhanCong.DataSource = phanCongGiangDayBUL.layPhanCongGiangDayTheoTenCoDieuKienTheoLopHoc(txtLichPhanCong.Text);
+                }
+                if (cbLoai.Text == "Mã giáo viên")
+                {
+
+
+                    dgvLichPhanCong.DataSource = phanCongGiangDayBUL.layPhanCongGiangDayTheoTenCoDieuKienTheoGiaoVien(txtLichPhanCong.Text);
+                }
             }
+        }
+
+        private void reportViewer1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnTaoBaoCaoHocSinh_Click(object sender, EventArgs e)
+        {
+            this.v1TableAdapter.Fill(this.QuanLyHocSinhDataSet.v1, cbTenLopBaoCao.SelectedValue +"");
+            addParamBaoCaoHocSinh();
+        }
+
+        private void btnTaoBaoCaoGiaoVien_Click(object sender, EventArgs e)
+        {
+            this.v2TableAdapter.Fill(this.QuanLyHocSinhDataSet1.v2, cbLop_GiaoVien.SelectedValue +"");
+            addParamBaoCaoGiaoVien();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            string d = "Hôm nay " + DateTime.Now.ToString("dd/MM/yyyy     HH:mm:ss");
+            lbNgayGio.Text = d;
+        }
+
+        private void txtHocSinh_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panelEx15_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

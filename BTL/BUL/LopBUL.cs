@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL;
 using DTO;
+using System.Data;
 namespace BUL
 {
     public class LopBUL
@@ -13,6 +14,10 @@ namespace BUL
         public List<Lop> layTatLop()
         {
             return dal.layLop();
+        }
+        public DataTable layTatLopCoTen()
+        {
+            return dal.layLopCoTen();
         }
         public List<Lop> layTatLopTheoDieuKien(string maLop)
         {
