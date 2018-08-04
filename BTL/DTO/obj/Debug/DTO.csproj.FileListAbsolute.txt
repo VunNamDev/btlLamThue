@@ -1,0 +1,4 @@
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\BTL\DTO\bin\Debug\DTO.dll
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\BTL\DTO\bin\Debug\DTO.pdb
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\BTL\DTO\obj\Debug\DTO.dll
+C:\Users\Dell ALL\Documents\Visual Studio 2015\Projects\BTL\DTO\obj\Debug\DTO.pdb
